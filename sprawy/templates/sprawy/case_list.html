@@ -1,0 +1,47 @@
+{% extends 'aplikacja/base.html' %}
+{% block content %}
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Lista {{ type }}</h1>
+                    <p class="mb-4">Kliknij w nazwę sprawy aby przejść do widoku szczegółowego</p>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Nazwa</th>
+                                            <th>Klient</th>
+                                            <th>Typ sprawy</th>
+                                            <th>Detektyw</th>
+                                            <th>Zawieszona</th>
+                                            <th>Zamknięta</th>
+                                            <th>Zgłoszona do KPP</th>
+                                            <th>Data rozpoczęcia</th>
+                                            <th>Data zakończenia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for sprawa in sprawy %}
+                                        <tr>
+                                            <td><a href="{% url 'sprawy:case_detail' sprawa.id %}">{{ sprawa.nazwa }}</td></a>
+                                            <td>{{ sprawa.klient.imie }} {{ sprawa.klient.nazwisko }}</td>
+                                            <td>{{ sprawa.typ_sprawy }}</td>
+                                            <td>{{ sprawa.detektyw.imie }} {{ sprawa.detektyw.nazwisko }}</td>
+                                            <td class="text-center">{% if sprawa.zawieszona %} <i class="far fa-check-square"></i> {% else %}<i class="fas fa-times"> </i>{% endif %}</td>
+                                            <td class="text-center">{% if sprawa.zamknieta %} <i class="far fa-check-square"></i> {% else %}<i class="fas fa-times"> </i>{% endif %}</td>
+                                            <td class="text-center">{% if sprawa.zgloszona_do_kpp %} <i class="far fa-check-square"></i> {% else %}<i class="fas fa-times"> </i>{% endif %}</td>
+                                            <td>{{ sprawa.data_rozpoczecia }}</td>
+                                            <td>{{ sprawa.data_zakonczenia|default_if_none:"" }}</td>
+
+                                        </tr>
+                                        {% endfor %}                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+{% endblock %}

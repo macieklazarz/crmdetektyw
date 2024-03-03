@@ -1,0 +1,39 @@
+{% extends 'aplikacja/base.html' %}
+{% block content %}
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Lista {{ type }}</h1>
+                    <p class="mb-4">Kliknij w nazwisko aby przejść do widoku szczegółowego</p>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Nazwisko</th>
+                                            <th>Imię</th>
+                                            <th>Adres email</th>
+                                            <th>Numer telefonu</th>
+                                            <th>Adres</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                        <tr>
+                                            <td><a href="{% url 'customer_detail' user.id %}">{{ user.nazwisko }}</td></a>
+                                            <td>{{ user.imie }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>{{ user.numer_telefonu }}</td>
+                                            <td>{{ user.adres }}</td>
+
+                                        </tr>
+                                        {% endfor %}                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+{% endblock %}
