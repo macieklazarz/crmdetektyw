@@ -150,6 +150,24 @@ class CustomUserInline():
 			auto.save()
 
 
+class StaffCreate(LoginRequiredMixin, CustomUserInline, CreateView):
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ProductCreate, self).get_context_data(**kwargs)
+        ctx['named_formsets'] = self.get_named_formsets()
+        return ctx
+
+    def get_named_formsets(self):
+        if self.request.method == "GET":
+            return {
+                'auta': PojazdFormSet(prefix='auta'),
+            }
+        else:
+            return {
+                'auta': PojazdFormSet(self.request.POST or None, self.request.FILES or None, prefix='auta'),
+
+            }
+
 class StaffUpdateView(LoginRequiredMixin, UserPassesTestMixin, CustomUserInline, UpdateView):
 	def get_context_data(self, **kwargs):
 		ctx = super(StaffUpdateView, self).get_context_data(**kwargs)
@@ -157,13 +175,25 @@ class StaffUpdateView(LoginRequiredMixin, UserPassesTestMixin, CustomUserInline,
 		return ctx
 
 	def get_named_formsets(self):
-		return {'auta': PojazdFormset(self.request.POST or None, self.request.FILES or None, instance=self.object, prefix='variants'),
+		return {'auta': PojazdFormset(self.request.POST or None, self.request.FILES or None, instance=self.object, prefix='auta'),
 		}
 
 	def test_func(self, *args, **kwargs):
 		current_user = self.get_object()
 
 		return self.request.user.admin == 1 or current_user == self.request.user
+
+	def get_form_kwargs(self, *args, **kwargs):
+		kwargs = super(StaffUpdateView, self).get_form_kwargs()
+		uuid = self.kwargs['pk']
+		user = CustomUser.objects.get(id=uuid)
+		is_detektyw = user.detektyw
+
+		kwargs['is_detektyw'] = is_detektyw
+		kwargs['requestor_is_admin'] = self.request.user.admin
+
+		return kwargs
+
 
 
 

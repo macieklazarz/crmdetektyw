@@ -28,13 +28,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 	objects = CustomUserManager()
 
 	def __str__(self):
-		return self.email
+		return f'{self.nazwisko} {self.imie}'
 
 	def get_absolute_url(self):
 		if self.detektyw:
 			url = 'staff_update'
 		else:
 			url = 'customer_update'
+		return reverse(url, kwargs={'pk': self.pk})
+
+	def get_detail_url(self):
+
+		url = 'customer_detail'
+
 		return reverse(url, kwargs={'pk': self.pk})
 
 	def save(self, *args, **kwargs):

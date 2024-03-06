@@ -1,5 +1,5 @@
 from django.contrib import admin
-from sprawy.models import Sprawa, TypSprawy
+from sprawy.models import Sprawa, TypSprawy, Notatka
 # Register your models here.
 
 @admin.register(Sprawa)
@@ -12,3 +12,9 @@ class SprawyAdmin(admin.ModelAdmin):
 class TypSprawyAdmin(admin.ModelAdmin):
 	list_display = ('typ_sprawy',)
 	search_fields = ('typ_sprawy',)
+
+
+@admin.register(Notatka)
+class NotatkaAdmin(admin.ModelAdmin):
+	list_display = ('sprawa', 'autor', 'tresc')
+	search_fields = ('sprawa', 'autor', 'tresc')

@@ -109,13 +109,19 @@ class StaffUpdateForm(forms.ModelForm):
         model = CustomUser
         fields = ("email", "imie", "nazwisko", "adres", "numer_telefonu", "admin", "detektyw")
 
-    # def __init__(self, *args, **kwargs):
-    #     from django.forms.widgets import HiddenInput
-    #     is_detektyw = kwargs.pop("is_detektyw", None)
+    def __init__(self, *args, **kwargs):
+        from django.forms.widgets import HiddenInput
+        is_detektyw = kwargs.pop("is_detektyw", None)
+        requestor_is_admin = kwargs.pop("requestor_is_admin", None)
 
-    #     super(StaffUpdateForm, self).__init__(*args, **kwargs)
-    #     if is_detektyw:
-    #         self.fields['inne'].widget = HiddenInput()
+        super(StaffUpdateForm, self).__init__(*args, **kwargs)
+        if not requestor_is_admin:
+            self.fields['admin'].widget = HiddenInput()
+            self.fields['detektyw'].widget = HiddenInput()
+
+
+
+
 class PojazdForm(forms.ModelForm):
 
     class Meta:
@@ -124,4 +130,5 @@ class PojazdForm(forms.ModelForm):
         widgets = {'numer_rejestracyjny' : forms.TextInput(
         attrs={'class': 'form-control form-control-user','placeholder': '','id': 'exampleInputEmail',})}
 
-PojazdFormset = inlineformset_factory(CustomUser, Pojazd, form=PojazdForm, extra=3)
+# PojazdFormset = inlineformset_factory(CustomUser, Pojazd, form=PojazdForm, extra=3)
+PojazdFormset = inlineformset_factory(CustomUser, Pojazd, form=PojazdForm, extra=1, can_delete=True, can_delete_extra=True)
