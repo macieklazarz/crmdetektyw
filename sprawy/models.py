@@ -27,6 +27,7 @@ class Sprawa(models.Model):
 	dane_posiadane = models.TextField(max_length=1024, blank=True, null=True)
 	opis_sprawy = models.TextField(max_length=1024, blank=True, null=True)
 	zakres_czynnosci = models.TextField(max_length=1024, blank=True, null=True, verbose_name='Zakres czynności')
+	brudnopis = models.TextField(max_length=1024, blank=True, null=True, verbose_name='Brudnopis')
 
 
 	def get_notes(self):

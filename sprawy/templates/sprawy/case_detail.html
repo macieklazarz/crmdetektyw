@@ -19,11 +19,13 @@
                 Notatki
             </a>
         </li>
+        {% if request.user.is_staff %}
         <li class="nav-item">
             <a aria-controls="content-3" aria-selected="false" class="nav-link" data-toggle="tab" href="#content-3" id="tab-3" role="tab">
                 Brudnopis
             </a>
         </li>
+        {% endif %}
         <li class="nav-item">
             <a aria-controls="content-4" aria-selected="false" class="nav-link" data-toggle="tab" href="#content-4" id="tab-4" role="tab">
                 Materiały
@@ -230,7 +232,8 @@
                         <!-- Border Left Utilities -->
                         <div class="col">
                             {% for notatka in sprawa.get_notes %}
-                            <div class="card mb-4 py-3 border-left-primary">
+                            {% if request.user.is_staff or notatka.widoczna_dla_klienta %}
+                            <div class="card mb-4 py-2 border-left-primary">
                                 <div class="card-body">
                                     <div class="d-sm-flex align-items-center justify-content-between mb-1">
                                         <div class="d-sm-flex align-items-center mb-4">
@@ -250,15 +253,48 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     {{ notatka.tresc }}
+                                    <div class="d-sm-flex align-items-center justify-content-between pt-3">
+                                        <div class="d-sm-flex align-items-center mb-1">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase">
+                                                Widoczna dla klienta:
+                                            </div>
+                                            <div class="text-xs font-weight-bold text-info text-right pl-1">
+                                                {% if notatka.widoczna_dla_klienta %}<i class="fas fa-check"></i>{% else %}<i class="fas fa-times"></i>{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            {% endif %}
                             {% endfor %}
                         </div>
                         <!-- Border Bottom Utilities -->
                     </div>
                 </div>
+                {% if request.user.is_staff %}
+                <div class="row d-flex justify-content-center">
+                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- <div class="col-xl-3 col-md-6 mb-4"> -->
+                    <div class="my-2">
+                    </div>
+                    <a class="btn btn-warning btn-icon-split" href="{% url 'sprawy:note_update' sprawa.pk %}">
+                        <span class="icon text-white-50">
+                            <i class="far fa-edit">
+                            </i>
+                        </span>
+                        <span class="text">
+                            Edytuj
+                        </span>
+                    </a>
+
+                    <!-- </div> -->
+                    <!-- Earnings (Annual) Card Example -->
+                </div>
+                {% endif %}
             </div>
+            {% if request.user.is_staff %}
             <div aria-labelledby="tab-3" class="tab-pane fade" id="content-3" role="tabpanel">
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -266,36 +302,40 @@
                     <div class="row">
                         <!-- Border Left Utilities -->
                         <div class="col">
-                            {% for notatka in sprawa.get_notes %}
-                            <div class="card mb-4 py-3 border-left-primary">
-                                <div class="card-body">
-                                    <div class="d-sm-flex align-items-center justify-content-between mb-1">
-                                        <div class="d-sm-flex align-items-center mb-4">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Autor:
-                                            </div>
-                                            <div class="text-xs font-weight-bold text-info mb-1 text-right pl-1">
-                                                {{ notatka.autor.imie}} {{ notatka.autor.nazwisko}}
-                                            </div>
-                                        </div>
-                                        <div class="d-sm-flex align-items-center mb-4">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Data dodania:
-                                            </div>
-                                            <div class="text-xs font-weight-bold text-info mb-1 text-right pl-1">
-                                                {{ notatka.data_utworzenia}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {{ notatka.tresc }}
+
+                            <div class="card mb-1 py-3 border-left-primary">
+                                <div class="card-body ">
+
+
+                                    {{ sprawa.brudnopis }}
+
                                 </div>
                             </div>
-                            {% endfor %}
+
                         </div>
                         <!-- Border Bottom Utilities -->
                     </div>
                 </div>
+                <div class="row d-flex justify-content-center">
+                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- <div class="col-xl-3 col-md-6 mb-4"> -->
+                    <div class="my-2">
+                    </div>
+                    <a class="btn btn-warning btn-icon-split" href="{% url 'sprawy:draft_update' sprawa.pk %}">
+                        <span class="icon text-white-50">
+                            <i class="far fa-edit">
+                            </i>
+                        </span>
+                        <span class="text">
+                            Edytuj
+                        </span>
+                    </a>
+
+                    <!-- </div> -->
+                    <!-- Earnings (Annual) Card Example -->
+                </div>
             </div>
+            {% endif %}
             <div aria-labelledby="tab-4" class="tab-pane fade" id="content-4" role="tabpanel">
                 Materiały
             </div>

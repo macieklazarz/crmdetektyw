@@ -1,31 +1,30 @@
 {% extends 'aplikacja/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 <!-- Page Heading -->
 <form method="post">
     {% csrf_token %}
-    <h2>
-        Dane:
-    </h2>
+
     {{ form.as_p }}
     <h2>
-        Auta:
+        Notatki:
     </h2>
-    {% with named_formsets.auta as formset %}
+    {% with named_formsets.notatki as formset %}
         {{ formset.management_form }}
-        <script id="auta-template" type="text/html">
-            <div id="auta-__prefix__" class= hide_all>
+        <script id="notatki-template" type="text/html">
+            <div id="notatki-__prefix__" class= hide_all>
                     {% for fields in formset.empty_form.hidden_fields %}
                         {{ fields }}
                     {% endfor %}
                 
                     {% for fields in formset.empty_form.visible_fields %}
-                        <div>{{ fields.label }}: {{fields}}</div>
+                        <div>{{ fields.label }}: {{fields }}</div>
                     {% endfor %}
                 </div>
         </script>
         <!-- <div class="table-responsive card mt-1"> -->
         <!-- <div class="table card-header"> -->
-        <div id="item-auta">
+        <div id="item-notatki">
             <!-- id="item-inlineformsetname" -->
             <!-- formset non forms errors -->
             {% for error in formset.non_form_errors %}
@@ -35,7 +34,7 @@
             {% endfor %}
                         {% for formss in formset %}
                             {{ formss.management_form }}
-            <div class="hide_all" id="auta-{{ forloop.counter0 }}">
+            <div class="hide_all my-4" id="notatki-{{ forloop.counter0 }}">
                 <!-- id="inlineformsetname-counter" -->
                 {{ formss }}
             </div>
@@ -43,7 +42,7 @@
         </div>
         <!-- </div> -->
         <div class="d-flex">
-            <a class="btn btn-secondary add-auta" href="#" id="add-variant-button">
+            <a class="btn btn-secondary add-notatki" href="#" id="add-notatki-button">
                 Dodaj kolejne
             </a>
             <!-- id="add-inlineformsetname-button" -->
@@ -56,7 +55,7 @@
         <div class="my-2">
         </div>
         <!-- <i class="far fa-edit"><input type="submit" value="Zapisz" class="btn btn-warning btn-icon-split"></i> -->
-        <a "="" class="btn btn-success btn-icon-split">
+        <a class="btn btn-success btn-icon-split">
             <span class="icon text-white-50">
                 <i class="fas fa-check">
                 </i>
@@ -79,16 +78,17 @@
 
 
   $(document).ready(function() {
-    // when user clicks add more btn of auta
-      $('.add-auta').click(function(ev) {
+    // when user clicks add more btn of notatki
+      $('.add-notatki').click(function(ev) {
           ev.preventDefault();
-          var count = $('#item-auta').children().length;
-          var tmplMarkup = $('#auta-template').html();
+          var count = $('#item-notatki').children().length;
+          console.log(count)
+          var tmplMarkup = $('#notatki-template').html();
           var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-          $('#item-auta').append(compiledTmpl);
+          $('#item-notatki').append(compiledTmpl);
   
           // update form count
-          $('#id_auta-TOTAL_FORMS').attr('value', count+1);
+          $('#id_notatki-TOTAL_FORMS').attr('value', count+1);
       });
   });
 </script>

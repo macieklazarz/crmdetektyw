@@ -44,7 +44,7 @@ class CustomerListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 	def test_func(self, *args, **kwargs):
 
-		return self.request.user.is_staff == 1
+		return self.request.user.admin == 1
 
 
 class StaffListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -60,7 +60,7 @@ class StaffListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 	def test_func(self, *args, **kwargs):
 
-		return self.request.user.is_staff == 1
+		return self.request.user.admin == 1
 
 
 class CustomerDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -73,7 +73,7 @@ class CustomerDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 	def test_func(self, *args, **kwargs):
 		current_user = self.get_object()
 
-		return self.request.user.is_staff == 1 or current_user == self.request.user
+		return self.request.user.admin == 1 or current_user == self.request.user
 
 	def post(self, request,  *args, **kwargs):
 		print('post1')
@@ -105,7 +105,7 @@ class CustomerUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 
 	def get_success_url(self):
-		if self.request.user.is_staff:
+		if self.request.user.admin:
 			return reverse('customer_list')
 		else:
 			return reverse('home')
@@ -113,7 +113,7 @@ class CustomerUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	def test_func(self, *args, **kwargs):
 		current_user = self.get_object()
 
-		return self.request.user.is_staff == 1 or current_user == self.request.user
+		return self.request.user.admin == 1 or current_user == self.request.user
 
 
 
@@ -138,7 +138,10 @@ class CustomUserInline():
 				formset_save_func(formset)
 			else:
 				formset.save()
-		return redirect('staff_list')
+
+		if self.request.user.admin:
+			return redirect('staff_list')
+		return redirect('home')
 
 	def formset_auta_valid(self, formset):
 		auta = formset.save(commit=False)  # self.save_formset(formset, contact)
@@ -194,36 +197,16 @@ class StaffUpdateView(LoginRequiredMixin, UserPassesTestMixin, CustomUserInline,
 
 		return kwargs
 
+	def get_success_url(self):
+		if self.request.user.admin:
+			return reverse('customer_list')
+		else:
+			return reverse('home')
 
 
 
-# class StaffUpdateView(UpdateView):
-# 	model = CustomUser
-# 	# context_object_name = "user"
-# 	# fields = ["nazwisko"]
-# 	form_class = StaffUpdateForm
-# 	template_name = 'uzytkownicy/staff_update.html'
-
-# 	def get_context_data(self, **kwargs):
-# 		data = super().get_context_data(**kwargs)
-# 		if self.request.POST:
-# 			data["pojazd"] = PojazdFormset(self.request.POST, instance=self.object)
-# 		else:
-# 			data["pojazd"] = PojazdFormset(instance=self.object)
-# 		return data
-
-# 	def form_valid(self, form):
-# 		context = self.get_context_data()
-# 		pojazd = context["pojazd"]
-# 		self.object = form.save()
-# 		if pojazd.is_valid():
-# 			pojazd.instance = self.object
-# 			pojazd.save()
-# 		return super().form_valid(form)
 
 
-# 	def get_success_url(self):
-# 		return reverse('staff_list')
 
 
 class PojazdCreateView(LoginRequiredMixin, CreateView):
